@@ -7,12 +7,11 @@ import hashlib
 VIDEO_FILES = [
     "//Volumes/Cinematography/FOOTAGE/2018/OnstreamChristmasParty/P1110149-ProRes-422-LakeLouiseOnstream",
     "//Volumes/Cinematography/FOOTAGE/2018/OnstreamChristmasParty/P1110164-ProRes-422-LakeLouiseOnstream",
-    "//Volumes/Cinematography/FOOTAGE/2018/OnstreamChristmasPartier/P1110229-ProRes-422-LakeLouiseOnstream"]
+    "//Volumes/Cinematography/FOOTAGE/2018/OnstreamChristmasParty/P1110229-ProRes-422-LakeLouiseOnstream"]
 
 
 def get_dest_file_path(full_file_path):
     file_name = os.path.basename(full_file_path)
-    # dest_dir = "//Volumes/DESKSTAR/JavenFullRes"
     dest_dir = os.getcwd()
     return "{}/{}".format(dest_dir, file_name)
 
@@ -43,11 +42,13 @@ def main():
     total = len(VIDEO_FILES)
     error_info = []
     warning_info = []
+    skip_info = []
 
-    for _file in VIDEO_FILES:
+    # for _file in VIDEO_FILES:ss
+    for idx, _file in enumerate(VIDEO_FILES):
 
-        file_count = error_count + success_count + 1
-        print("copying {} / {} files".format(file_count, total))
+        # file_count = error_count + success_count + 1
+        print("copying {} / {} files . . . ".format(idx+1, total))
 
         mov_file = "{}.mov".format(_file)
         mov2_file = "{}.MOV".format(_file)
@@ -77,6 +78,7 @@ def main():
             if file_exists_in_dest(dest_file_path):
                 msg = "SKIPPING, File Already Copied: {}".format(dest_file_path)
                 warning_info.append(msg)
+                skip_info.append(msg)
             else:
                 try:
                     print("source checksum ...")
@@ -110,8 +112,8 @@ def main():
 
     print("PROCESS COMPLETE")
     print(" ")
-    print("{} / {} files successfully copied.  | {} files had errors | {} warnings found ".
-          format(success_count, total, len(error_info), len(warning_info)))
+    print("{} / {} files successfully copied | {} files skipped | {} files had errors | {} warnings found ".
+          format(success_count, total, len(skip_info), len(error_info), len(warning_info)))
 
     print(" ")
     if len(warning_info) > 0:
@@ -127,12 +129,14 @@ def main():
 
 
 if __name__ == '__main__':
-    print("Starting Full-Res Copying . . . ")
-    # main()
+    print(" ")
+    print("Starting Hi-Res-Proxy Copying . . . ")
+    print(" ")
+    main()
     print(" ")
     print("_______________________________________________________")
     print(" ")
-    print("COMLEPETED Full-Res Copying")
+    print(". . . Completed Hi-Res-Proxy  Copying")
     print(" ")
     print("GOOD BYE!")
     print(" ")
