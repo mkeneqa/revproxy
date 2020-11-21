@@ -1,3 +1,6 @@
+# ProxyHiRes Fetcher
+Simple Python Script to copy data from source to destination. This is part of my proxy workflow that gathers the corresponding full res video files for the proxies within a project.
+
 ## Quick Start
 2. Create python virtual environment in a folder:
     - **UNIX**: `python3 -m venv env`
