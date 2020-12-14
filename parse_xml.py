@@ -19,19 +19,19 @@ def get_file_name_ext_from_source(full_path: str):
     return name_ext.split('.')
 
 
-def parse_asset_nodes(db: db_lite.DBLite, nodes: list):
+def parse_asset_nodes(_db: db_lite.DBLite, _nodes: list):
     rows = []
-    for node in nodes:
+    for node in _nodes:
         # [(UID, kind, file_ext, file_name, src, notes, within_fcp, proxy_file)]
         row = (None, node.attrib['uid'], '', '', node.attrib['name'], '', node.tag, '', '')
         rows.append(row)
 
-    db.insert_many_into(rows)
+    _db.insert_many_into(rows)
 
 
-def parse_media_nodes(db: db_lite.DBLite, nodes: list):
+def parse_media_nodes(_db: db_lite.DBLite, _nodes: list):
     rows = []
-    for node in nodes:
+    for node in _nodes:
         # uid,kind,file_ext,file_name,src_path, notes
         full_path = node.attrib['src']
         name_ext = get_file_name_ext_from_source(full_path)
@@ -41,12 +41,12 @@ def parse_media_nodes(db: db_lite.DBLite, nodes: list):
         row = (None, node.attrib['sig'], node.attrib['kind'], name_ext[1], name_ext[0], full_path, node.tag, within_fcp, proxy_file)
         rows.append(row)
 
-    db.insert_many_into(rows)
+    _db.insert_many_into(rows)
 
 
 if __name__ == '__main__':
-    db = db_lite.DBLite('test.db')
-    tree = ET.parse('Javen5yrsRuffCut_BASIC_EXPORT.fcpxml')
+    db = db_lite.DBLite('javen5.db')
+    tree = ET.parse('WIP_Javen_Year5_1920x960.fcpxml')
     root = tree.getroot()
     media_dict = {}
     media_list = []
