@@ -6,30 +6,49 @@ import os
 class DBLite(object):
     DB_FILE_NAME = ''
     CONN = None
+    CURSOR = None
     MEDIA_TABLE = 'media'
 
     def set_db_file_name(self, db_file_name):
         self.DB_FILE_NAME = db_file_name
 
-    def __init__(self, db_file, clear_tables=False):
-        if os.path.exists(db_file):
-            self.connect(db_file)
-        else:
-            try:
-                self.connect(db_file)
-                self.create_base_tables()
-            except Error as e:
-                print("ERR: {} ".format(e))
-                clear_tables = False
+    def dict_factory(self, cursor, row):
+        # https://stackoverflow.com/a/3300514
+        d = {}
+        for idx, col in enumerate(cursor.description):
+            d[col[0]] = row[idx]
+        return d
 
-        if clear_tables:
-            self.truncate_table()
+    def __init__(self, db_file, clear_tables=False, use_dict=False):
+        try:
+            if os.path.exists(db_file):
+                self.connect(db_file, use_dict)
+            else:
+                try:
+                    self.connect(db_file)
+                    self.create_base_tables()
+                except Error as e:
+                    print("ERR: {} ".format(e))
+                    clear_tables = False
 
-    def connect(self, db_file):
+            if clear_tables:
+                self.truncate_table()
+
+        except Error as e:
+            print(f"SQLITE ERR:{e}")
+
+    def fetch_all(self, qry):
+        self.CURSOR.execute(qry)
+        return self.CURSOR.fetchall()
+
+    def connect(self, db_file, use_dict):
         """ create a database connection to a SQLite database """
         conn = None
         try:
             self.CONN = sqlite3.connect(db_file)
+            if use_dict:
+                self.CONN.row_factory = self.dict_factory
+            self.CURSOR = self.CONN.cursor()
             print(sqlite3.version)
         except Error as e:
             print(e)
