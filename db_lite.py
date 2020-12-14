@@ -38,6 +38,10 @@ class DBLite(object):
         if self.CONN:
             self.CONN.close()
 
+    def fetch_all(self, qry: str):
+        self.CURSOR.execute(qry)
+        return self.CURSOR.fetchall()
+
     def insert_many_into(self, rows: list):
         """
 
