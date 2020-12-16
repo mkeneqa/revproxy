@@ -7,6 +7,7 @@ import sqlite3
 from sqlite3 import Error
 import db_lite
 
+DB_FILE = 'mymedia.db'
 PROXY_DIR = "media/proxies"
 ORIG_DIR = "media/originals"
 MESSAGE = {
@@ -17,7 +18,7 @@ MESSAGE = {
 }
 
 VIDEO_FILES = [{
-    "src_path": "/Volumes/Cinematography/FOOTAGE/2018/Javen 2018/ClearWaterAugustLong/August11/proxies/P1133324_proxy.mp4",
+    "src_path": "/Volumes/2018/August11/proxies/P1133324_proxy.mp4",
     "proxy_file": 1
 }]
 
@@ -131,6 +132,46 @@ def get_video_list():
     return db.fetch_all(qry)
 
 
+def get_videos_with_proxy():
+    db = db_lite.DBLite(db_file=DB_FILE, use_dict=True)
+    qry = "SELECT `uid`,`file_name` FROM media WHERE `file_name` LIKE '%_proxy' GROUP BY `uid`"
+    return db.fetch_all(qry)
+
+
+def main2():
+    tlv_names = ["DJI_0568_proxy",
+                 "20151213_110933_HDR",
+                 "PD136463_proxy",
+                 "PD136069_proxy",
+                 "PD136051_proxy",
+                 "PD135349_proxy",
+                 "PD136147_proxy",
+                 "PD135212_proxy"]
+
+    orginal_location = "/Volumes/SEAGATE/FullRes/media/originals"
+    for idx, vid in enumerate(tlv_names):
+
+        ori_vid = strip_proxy_for_original_name(vid)
+        deskstar_mov_path = rf"{orginal_location}/{ori_vid}.mov"
+        deskstar_mp4_path = rf"{orginal_location}/MP4/{ori_vid}/.mp4"
+
+        if path.exists(deskstar_mp4_path):
+            MESSAGE['success'].append(f"{deskstar_mp4_path} Exists")
+        elif path.exists(deskstar_mov_path):
+            MESSAGE['success'].append(f"{deskstar_mov_path} Exists")
+        else:
+            MESSAGE['error'].append(f"{ori_vid} Not Present")
+
+    total = len(MESSAGE['error']) + len(MESSAGE['success'])
+    print(f"Checked {total} files")
+    print(f"{len(MESSAGE['success'])} passed")
+    print(f"{len(MESSAGE['error'])} FAILED")
+
+    if len(MESSAGE['error']) > 0:
+        for m in MESSAGE['error']:
+            print(f"{m}")
+
+
 def main():
     videos = get_video_list()
     # videos = VIDEO_FILES
@@ -224,7 +265,8 @@ if __name__ == '__main__':
     print("Starting Hi-Res-Proxy Copying . . . ")
     print(" ")
     try:
-        main()
+        # main()
+        main2()
     except Exception as e:
         print(f"ERROR: {e}")
     print(" ")
