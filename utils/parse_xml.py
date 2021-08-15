@@ -1,10 +1,7 @@
 import re
 import xml.etree.ElementTree as ET
-import sqlite3
-from sqlite3 import Error
-import db_lite
-import fileinput
-from datetime import date, datetime
+from utils import db_lite
+from datetime import datetime
 
 
 def term_in_file(search_term, full_path):

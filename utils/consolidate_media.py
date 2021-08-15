@@ -1,11 +1,9 @@
 import os.path
 from os import path
-from os.path import dirname, basename
+from os.path import dirname
 from shutil import copyfile
 import hashlib
-import sqlite3
-from sqlite3 import Error
-import db_lite
+from utils import db_lite
 
 DB_FILE = 'mymedia.db'
 PROXY_DIR = "media/proxies"
