@@ -11,3 +11,4 @@ log.txt
 *.fcpxml
 media/*
 env
+config.json
