@@ -1,5 +1,8 @@
-# ProxyHiRes Fetcher
-Simple Python Script to copy data from source to destination. This is part of my proxy workflow that gathers the corresponding full res video files for the proxies within a project.
+# Reverse Proxy Adapter
+Script for reconciling proxy clips to full res using a Reverse Proxy Workflow in Apple's Final Cut.
+
+This is a simple Python Script to copy data from source to destination. 
+Gathers the corresponding full res video files for the proxies within a project.
 
 ## Quick Start
 2. Create python virtual environment in a folder:
