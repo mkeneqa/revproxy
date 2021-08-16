@@ -1,6 +1,8 @@
 {
-  "FCP_PROJECT_LOCATION": "",
-  "PROXY_LOCATION": "",
-  "FULL_RES_LOCATION": "",
-  "COPY_FULL_RES_DESTINATION": ""
+  "project_location": "",
+  "fcpxml_file": "",
+  "proxy_location": "",
+  "full_res_location": "",
+  "copy_full_res_to_project_location": 1,
+  "reorg_proxies": 1
 }

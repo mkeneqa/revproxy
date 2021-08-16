@@ -1,1 +1,5 @@
 cleo
+prodict
+beautifulsoup4
+bs4
+lxml

@@ -13,15 +13,16 @@ class RproxyCommand(Command):
 
     def handle(self):
         ops = self.argument('operation')
+        ops = True
 
         if ops:
             rproxy = ReverseProxyWorkflow()
-            rproxy.hello()
-            text = 'Operation {}'.format(ops)
+            # rproxy.hello()
+            # text = 'Operation {}'.format(ops)
         else:
-            text = 'Hello'
+            text = 'Enter Params'
 
-        if self.option('yell'):
-            text = text.upper()
+        # if self.option('yell'):
+        #     text = text.upper()
 
-        self.line(text)
+        # self.line(text)
