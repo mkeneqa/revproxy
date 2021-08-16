@@ -1,7 +1,7 @@
 import os.path
 from os import path
 from os.path import dirname
-from shutil import copyfile
+from shutil import copyfile, move, copytree
 import hashlib
 from utils import db_lite
 
@@ -59,35 +59,43 @@ def get_file_checksum(file_path):
     return md5_check.hexdigest()
 
 
-def copy_media(_source, _dest):
+def copy_media(_source, _dest, do_checksum=False):
     try:
-        print("source checksum ...")
-        src_checksum = get_file_checksum(_source)
+        if do_checksum:
+            print("source checksum ...")
+            src_checksum = get_file_checksum(_source)
+
         copyfile(_source, _dest)
 
         print("copied from: {} to: {}".format(_source, _dest))
 
-        print("destination checksum ...")
-        dest_checksum = get_file_checksum(_dest)
+        if do_checksum:
+            print("destination checksum ...")
+            dest_checksum = get_file_checksum(_dest)
 
-        checksum_msg = 'Checksums MATCH: {}'.format(src_checksum)
-        if src_checksum != dest_checksum:
-            checksum_msg = 'WARNING: Checksums DO NOT MATCH! {} != {}'.format(src_checksum, dest_checksum)
-            MESSAGE['warning'].append(checksum_msg)
-        else:
-            MESSAGE['success'].append(f"Successfully copied {os.path.basename(_dest)}")
+            checksum_msg = 'Checksums MATCH: {}'.format(src_checksum)
+            if src_checksum != dest_checksum:
+                checksum_msg = 'WARNING: Checksums DO NOT MATCH! {} != {}'.format(src_checksum, dest_checksum)
+                MESSAGE['warning'].append(checksum_msg)
+            else:
+                MESSAGE['success'].append(f"Successfully copied {os.path.basename(_dest)}")
 
-        print(checksum_msg)
-        print('_______________________________________________________')
-        print(" ")
+            print(checksum_msg)
+            print('_______________________________________________________')
+            print(" ")
 
-    except Exception as e:
-        print("ERR: Could Not Copy File! {}".format(str(e)))
+    except Exception as err:
+        print("ERR: Could Not Copy File! {}".format(str(err)))
         print("ERR SRC File: {}".format(_source))
         print("ERR DEST File: {}".format(_dest))
         print('_______________________________________________________')
         print('')
-        MESSAGE['error'].append("Could Not Copy File! {}".format(str(e)))
+        MESSAGE['error'].append("Could Not Copy File! {}".format(str(err)))
+
+
+def move_file_to_dir(file_path, dest_dir):
+    dest = move(file_path, dest_dir)
+    print("Moved file: ", dest)
 
 
 def test():
