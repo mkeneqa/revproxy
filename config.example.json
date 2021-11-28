@@ -1,8 +1,8 @@
 {
-  "project_location": "",
-  "fcpxml_file": "",
-  "proxy_location": "",
-  "full_res_location": "",
+  "project_location": "/Users/mike/Movies/Soccer",
+  "fcpxml_file": "/Users/mike/Movies/Soccer/proxy_export.fcpxml",
+  "proxy_location": "/Users/mike/Movies/Soccer/FullRes",
+  "full_res_location": "/Volumes/Footage/Soccer",
   "copy_full_res_to_project_location": 1,
   "reorg_proxies": 1
 }

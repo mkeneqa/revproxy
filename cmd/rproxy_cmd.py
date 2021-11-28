@@ -1,5 +1,5 @@
 from cleo import Command
-from reverse_proxy_class import ReverseProxyWorkflow
+from reverse_proxy_workflow import ReverseProxyWorkflow
 
 
 class RproxyCommand(Command):
@@ -16,9 +16,8 @@ class RproxyCommand(Command):
         ops = True
 
         if ops:
-            rproxy = ReverseProxyWorkflow()
-            # rproxy.hello()
-            # text = 'Operation {}'.format(ops)
+            r_proxy = ReverseProxyWorkflow()
+            r_proxy.run()
         else:
             text = 'Enter Params'
 
