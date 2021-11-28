@@ -5,9 +5,9 @@ import hashlib
 
 
 VIDEO_FILES = [
-    "//Volumes/Cinematography/FOOTAGE/2018/OnstreamChristmasParty/P1110149-ProRes-422-LakeLouiseOnstream",
-    "//Volumes/Cinematography/FOOTAGE/2018/OnstreamChristmasParty/P1110164-ProRes-422-LakeLouiseOnstream",
-    "//Volumes/Cinematography/FOOTAGE/2018/OnstreamChristmasParty/P1110229-ProRes-422-LakeLouiseOnstream"]
+    "//Volumes/Cinematography/FOOTAGE/2018/ChristmasParty/P1110149-ProRes-422",
+    "//Volumes/Cinematography/FOOTAGE/2018/ChristmasParty/P1110164-ProRes-422",
+    "//Volumes/Cinematography/FOOTAGE/2018/ChristmasParty/P1110229-ProRes-422"]
 
 
 def get_dest_file_path(full_file_path):
