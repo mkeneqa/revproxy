@@ -251,6 +251,13 @@ class CopyCommand(Command):
                                 print("File Found: " + src_file)
                                 if not os.path.exists(dest_file):
                                     CMedia.copy_media(src_file, dest_file)
+                                # remove item from list
+                                clips.remove(found[0])
 
                         except Exception as e:
                             print("ERR: " + str(e))
+
+        if len(clips) > 0:
+            print(f"{len(clips)} clips were not found ...")
+            for c in clips:
+                print("c")
