@@ -6,8 +6,7 @@ class GreetCommand(Command):
     Greets someone
 
     greet
-        {name? : Who do you want to greet?}
-        {--y|yell : If set, the task will yell in uppercase letters}
+        {xpath : Who do you want to greet?}
     """
 
     def handle(self):

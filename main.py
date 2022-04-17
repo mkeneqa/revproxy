@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
-from cmd.greet_cmd import GreetCommand
-from cmd.rproxy_cmd import RproxyCommand
-from cmd.copy_cmd import CopyCommand
+from cmd.greet import GreetCommand
+from cmd.rproxy import RproxyCommand
+from cmd.copy import CopyCommand
 from cleo import Application
 
 application = Application()

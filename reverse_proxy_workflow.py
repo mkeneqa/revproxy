@@ -4,8 +4,7 @@ import os
 import utils.consolidate_media as CMedia
 from prodict import Prodict
 # from bs4 import BeautifulSoup
-import xml.etree.ElementTree as ET
-from fcpxml_loader import FcpXmlLoader
+from utils.fcpxml_loader import FcpXmlLoader
 
 
 class Config(Prodict):

@@ -2,16 +2,24 @@ import os
 
 from cleo import Command
 import utils.consolidate_media as CMedia
+import commons
 
 
-class CopyCommand(Command):
+class TranscodeCommand(Command):
     """
     Executes a Reverse Proxy Command
 
-    copy
+    transcode
+        {sdir : source directory path}
+        {sfmt: source video file format}
+        {ddir : dest directory path}
+        {dfmtt: dest video file format}
+        {--pp|proresprofile: ProResPrpfile 0 -3}
     """
 
     def handle(self):
+        _dir = self.argument('directory')
+
         _clips = [
             "00000-ProRes-422-Proxy-GH2-CEREMONY.mp4",
             "00003.mp4",

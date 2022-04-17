@@ -1,7 +1,30 @@
-import os
+import os.path
 import xml.etree.ElementTree as ET
 from moviepy.editor import VideoFileClip
 import reverse_proxy_workflow as wflow
+from timecode import Timecode
+from moviepy.editor import VideoFileClip
+from utils.ffmpeg_class import FFMpeg
+import pathlib
+
+
+def frames_to_timecode(fn: float, frame_rate: float):
+    ff = fn % frame_rate
+    s = fn // frame_rate
+    # HH,MM,SS,FF
+    return int(s // 3600), int(s // 60 % 60), int(s % 60), int(ff)
+
+
+# Converts the '64bit/32bits' timecode format into seconds
+def parse_fcp_time_seconds(time_str, fps):
+    vals = [float(n) for n in time_str.replace('s', '').split('/')]
+    if 1 == len(vals):
+        seconds = vals[0]
+    else:
+        seconds = vals[0] / vals[1]
+    val = (seconds - int(seconds)) * fps
+
+    return val
 
 
 def get_clean_name(name, new_extension=None):
@@ -14,30 +37,109 @@ def get_clean_name(name, new_extension=None):
     return name
 
 
+class Clip:
+
+    def start_time(self):
+        pass
+
+    def end_time(self):
+        pass
+
+    def duration(self):
+        pass
+
+
 class FcpXmlLoader:
     # https://www.datacamp.com/community/tutorials/python-xml-elementtree
     def __init__(self, fcp_file):
+        self.source_location = r''
+        self.dest_location = r''
         self._file = fcp_file
         self.tree = ET.parse(self._file)
+        self.xml_root = ET.parse(fcp_file).getroot()
         self.config = wflow.load_config()
+        self.clips_collection = {}
+
+    def _get_unique_clip_name(self, clip_name):
+        new_clip_name = clip_name
+        # search if keuy already exists in collection
+        # found = [f for f in self.clips_collection if f.get(clip_name)]
+        if self.clips_collection.get(clip_name) is not None:
+            # i = found + 1
+            self.clips_collection[clip_name].append(True)
+            new_clip_name = clip_name + "_" + str(len(self.clips_collection[clip_name]) - 1)
+        else:
+            # newly added to collection
+            self.clips_collection[clip_name] = [True]
+
+        return new_clip_name
+
+    def _calculate_end_timecode(self, start_time, duration, fps):
+        # find end time
+        pass
+
+    def print_ffmpeg_cmd(self, start_time, clip_name, duration_time):
+        new_clip_name = self._get_unique_clip_name(clip_name)
+        cmd = [
+            f"ffmpeg -ss {str(start_time)}",
+            f"-i {self.source_location}/{clip_name}.mov",
+            f"-vcodec prores -profile:v 0 -acodec pcm_s16le -to {duration_time}",
+            f"-c copy {self.dest_location}/{new_clip_name}.mov"
+        ]
+
+        print(str(" ".join(cmd)))
+
+    def export_timeline_clips_metadata(self):
+        print_once = True
+        for rsrc in self.xml_root.findall("./library/event/project/sequence/spine/asset-clip"):
+            # print(str(rsrc))
+
+            duration_frames = rsrc.attrib['duration'][:-1]
+            clip_name = rsrc.attrib['name']
+            start_frames = rsrc.attrib['start'][:-1]
+
+            cr_node = rsrc.find('conform-rate')
+            fps = cr_node.attrib['srcFrameRate']
+
+            # float(24) * (1000.0 / 1001)
+            x, y = duration_frames.split('/')
+            frames_duration = float(fps) * (int(x) / int(y))
+            hh, mm, ss, ff = frames_to_timecode(frames_duration, float(fps))
+            duration_tc = Timecode(float(fps), f"{hh}:{mm}:{ss}.{ff}")
+
+            try:
+                x, y = start_frames.split('/')
+            except ValueError as e:
+                x = start_frames.split('/')[0]
+                y = 1
+
+            starting_frames = float(fps) * (int(x) / int(y))
+            hh, mm, ss, ff = frames_to_timecode(starting_frames, float(fps))
+            starting_tc = Timecode(float(fps), f"{hh}:{mm}:{ss}.{ff}")
+
+            end_tc = starting_tc + duration_tc
+
+            clip_name = clip_name.replace("_Proxy", '')
+            clip_name = clip_name.replace(".mov", '')
+            self.print_ffmpeg_cmd(start_time=starting_tc, duration_time=duration_tc, clip_name=clip_name)
 
     def load(self):
-        tree = self.tree
-        root = tree.getroot()
+        # tree = self.tree
+        # root = tree.getroot()
         # [elem.tag for elem in root.iter()]
         # for rsrc in root.findall("./resources/format[@width]"):
         #     print(rsrc.attrib['id'])
         #     rsrc.set('width', '3500')
         #     rsrc.set('height', '4500')
 
-        full_res_path = r"file:///Users/mainuser/Movies/Soccer/FullRes"
+        # full_res_path = r"file:///Users/mainuser/Movies/Soccer/FullRes"
 
         # for rsrc in root.findall("./resources/asset"):
         #     print(str(rsrc.attrib))
 
-        print("sig, kind, old_source, new_source")
+        # print("sig, kind, old_source, new_source")
         count = 1
-        for rsrc in root.findall("./resources/asset[@hasVideo='1']/media-rep"):
+        for rsrc in self.xml_root.findall("./resources/asset[@hasVideo='1']/media-rep"):
             if rsrc.attrib['kind'] == 'original-media':
                 media_file = get_clean_name(os.path.basename(rsrc.attrib['src']), new_extension="MP4")
                 new_file_path = os.path.join(full_res_path, media_file)
